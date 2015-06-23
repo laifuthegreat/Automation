@@ -18,6 +18,8 @@ def find_network(network):
 	x = network
 	if x != "rss":
 		x += ".com/"
+		if network == "youtube":
+			x += "user/"
 	return x
 
 print(Scan("http://www.appstate.edu/", "rss"))
