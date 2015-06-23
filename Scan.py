@@ -8,7 +8,7 @@ def Scan(url, network):
 	soup = BeautifulSoup(html)
 	if x != "RSS":
 		y = soup.find_all('a', href=re.compile(x))
-	return y
+	return y[0]['href']
 
 def find_network(network):
 	x = network
@@ -16,4 +16,4 @@ def find_network(network):
 		x += ".com/"
 	return x
 
-print(Scan("http://www.bu.edu", "twitter")[0])
+print(Scan("http://www.berkeley.edu//", "facebook"))
