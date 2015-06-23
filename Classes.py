@@ -1,5 +1,3 @@
-import urllib2
-
 class Institution:
 
 	def __init__(self, Name, Code, FaceBook, LinkedIn, Twitter, YouTube, RSS):
