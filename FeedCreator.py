@@ -6,4 +6,5 @@ def create_feed(name):
 	feed = feed + "&output=rss"
 	return feed
 
-print(create_feed("Chemeketa Community College"))
+x = input()
+print(create_feed(x))
