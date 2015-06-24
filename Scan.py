@@ -1,5 +1,6 @@
 import urllib.request
 import re
+import feedparser
 from bs4 import BeautifulSoup
 
 def Scan(url, network):
@@ -8,18 +9,26 @@ def Scan(url, network):
 	soup = BeautifulSoup(html)
 	if x != "rss":
 		y = soup.find_all('a', href=re.compile(x))
+		if y:
+			return y[0]['href']
 	else:
-		y = soup.find_all('a', href=re.compile("rss|feed|.xml"))
-	if y[0]:
-		return y[0]['href']
+		y = soup.find_all('a', type=re.compile("rss|xml|feed|atom"))
+		for k in y:
+			z = k['href']
+			if not "http://www." in z:
+				z = url[:-1] + z
+			d = feedparser.parse(z)
+			try:
+				d['feed']['title']
+				return z
+			except KeyError:
+				continue
 	return None
 
 def find_network(network):
 	x = network
 	if x != "rss":
 		x += ".com/"
-		if network == "youtube":
-			x += "user/"
 	return x
 
-print(Scan("http://www.appstate.edu/", "rss"))
+print(Scan(input(), input()))

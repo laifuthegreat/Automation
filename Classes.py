@@ -1,5 +1,4 @@
 class Institution:
-
 	def __init__(self, Name, Code, FaceBook, LinkedIn, Twitter, YouTube, RSS):
 		self.name = Name
 		self.code = Code
