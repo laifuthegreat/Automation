@@ -5,6 +5,3 @@ def create_feed(name):
 		feed = feed + "+" + x
 	feed = feed + "&output=rss"
 	return feed
-
-x = input()
-print(create_feed(x))

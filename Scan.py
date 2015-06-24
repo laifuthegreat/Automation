@@ -30,5 +30,3 @@ def find_network(network):
 	if x != "rss":
 		x += ".com/"
 	return x
-
-print(Scan(input(), input()))

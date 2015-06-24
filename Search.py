@@ -10,5 +10,3 @@ def showsome(searchfor):
   data = results['responseData']
   hits = data['results']
   return hits[0]['url']
-
-print(showsome('Stanford University News'))

@@ -1,4 +1,7 @@
 import csv
+import FeedCreator
+from Search import showsome
+from Scan import Scan
 
 def Automate(input_file, official_file):
 	inst_dict = Read_Official(official_file)
@@ -6,7 +9,6 @@ def Automate(input_file, official_file):
 	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 	f = open(input_file, 'r')
 	for s in f:
-		just_google = False
 		ls = s.split(',')
 		name = fix_name(ls[1])
 		try:
@@ -36,7 +38,7 @@ def Read_Official(input_file):
 	f = open(input_file, 'r')
 	for s in f:
 		ls = s.split(',')
-		if ls[1] != ""
+		if ls[1] != "":
 			inst_dict[ls[0]] = ls[1]
 		else:
 			continue
@@ -47,42 +49,42 @@ def create_print(name, site_url):
 	ls.append(name)
 	curr = Scan(site_url, "facebook")
 	if curr:
-		next = Search("{n} facebook site:facebook.com".format(n=name))
+		next = showsome("{n} facebook site:facebook.com".format(n=name))
 		if next != curr:
 			curr = pick(curr, next)
 		ls.append(curr)
 	else:
-		ls.append(Search("{n} facebook site:facebook.com".format(n=name)))
+		ls.append(showsome("{n} facebook site:facebook.com".format(n=name)))
 	curr = Scan(site_url, "twitter")
 	if curr:
-		next = Search("{n} twitter site:twitter.com".format(n=name))
+		next = showsome("{n} twitter site:twitter.com".format(n=name))
 		if next != curr:
 			curr = pick(curr, next)
 		ls.append(curr)
 	else:
-		ls.append(Search("{n} twitter site:twitter.com".format(n=name)))
+		ls.append(showsome("{n} twitter site:twitter.com".format(n=name)))
 	curr = Scan(site_url, "youtube")
 	if curr:
-		next = Search("{n} youtube site:youtube.com".format(n=name))
+		next = showsome("{n} youtube site:youtube.com".format(n=name))
 		if next != curr:
 			curr = pick(curr, next)
 		ls.append(curr)
 	else:
-		ls.append(Search("{n} youtube site:youtube.com".format(n=name)))
+		ls.append(showsome("{n} youtube site:youtube.com".format(n=name)))
 	curr = Scan(site_url, "linkedin")
 	if curr:
-		next = Search("{n} linkedin site:linkedin.com".format(n=name))
+		next = showsome("{n} linkedin site:linkedin.com".format(n=name))
 		if next != curr:
 			curr = pick(curr, next)
 		ls.append(curr)
 	else:
-		ls.append(Search("{n} linkedin site:linkedin.com".format(n=name)))
+		ls.append(showsome("{n} linkedin site:linkedin.com".format(n=name)))
 	curr = Scan(site_url, "rss")
 	if curr:
 		ls.append(curr)
 	else:
-		curr = Scan(Search("{n} news".format(n=name)), "rss")
-		if !curr:
+		curr = Scan(showsome("{n} news".format(n=name)), "rss")
+		if not curr:
 			curr = FeedCreator.create_feed(name)
 		ls.append(curr)
 	return ls
@@ -98,12 +100,12 @@ def pick(url1, url2):
 def create_print(name):
 	ls = []
 	ls.append(name)
-	ls.append(Search("{n} facebook site:facebook.com".format(n=name)))
-	ls.append(Search("{n} twitter site:twitter.com".format(n=name)))
-	ls.append(Search("{n} youtube site:youtube.com".format(n=name)))
-	ls.append(Search("{n} linkedin site:linkedin.com".format(n=name)))
-	curr = Scan(Search("{n} news".format(n=name)), "rss")
-		if !curr:
-			curr = FeedCreator.create_feed(name)
-		ls.append(curr)
+	ls.append(showsome("{n} facebook site:facebook.com".format(n=name)))
+	ls.append(showsome("{n} twitter site:twitter.com".format(n=name)))
+	ls.append(showsome("{n} youtube site:youtube.com".format(n=name)))
+	ls.append(showsome("{n} linkedin site:linkedin.com".format(n=name)))
+	curr = Scan(showsome("{n} news".format(n=name)), "rss")
+	if not curr:
+		curr = FeedCreator.create_feed(name)
+	ls.append(curr)
 	return ls
