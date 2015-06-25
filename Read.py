@@ -18,7 +18,11 @@ def Automate(input_file, official_file):
 		try:
 			print_list = create_print(name, inst_dict[name])
 		except KeyError:
-			print_list = create_print1(name)
+			x = do_search1(name)
+			if not x:
+				create_print1(name)
+			else:
+				print_list = create_print(name, x)
 		wr.writerow(print_list)
 
 def are_same(url1, url2):
@@ -71,50 +75,35 @@ def create_print(name, site_url):
 	ls.append(name)
 	curr = Scan(site_url, "facebook")
 	if curr:
-		nx = do_search(name, "facebook")
-		if not are_same(nx, curr):
-			print("______________")
-			print(curr)
-			print(nx)
-			curr = pick(curr, nx)
 		ls.append(curr)
 	else:
+		time.sleep(2)
 		ls.append(do_search(name, "facebook"))
-	time.sleep(2)
 	curr = Scan(site_url, "twitter")
 	if curr:
-		nx = do_search(name, "twitter")
-		if not are_same(nx, curr):
-			curr = pick(curr, nx)
 		ls.append(curr)
 	else:
+		time.sleep(2)
 		ls.append(do_search(name, "twitter"))
-	time.sleep(2)
 	curr = Scan(site_url, "youtube")
 	if curr:
-		nx = do_search(name, "youtube")
-		if not are_same(nx, curr):
-			curr = pick(curr, nx)
 		ls.append(curr)
 	else:
+		time.sleep(2)
 		ls.append(do_search(name, "youtube"))
-	time.sleep(2)
 	curr = Scan(site_url, "linkedin")
 	if curr:
-		nx = do_search(name, "linkedin")
-		if not are_same(nx, curr):
-			curr = pick(curr, nx)
 		ls.append(curr)
 	else:
+		time.sleep(2)
 		ls.append(do_search(name, "linkedin"))
-	time.sleep(2)
 	curr = Scan(site_url, "rss")
 	if curr:
 		ls.append(curr)
 	else:
 		try:
-			curr = Scan(do_search1(name+" news"), "rss")
-		except urllib.error.URLError:
+			curr = Scan(do_search1(name+" news rss"), "rss")
+		except (urllib.error.URLError, AttributeError):
 			curr = None
 		if not curr:
 			curr = FeedCreator.create_feed(name)
@@ -130,22 +119,22 @@ def pick(url1, url2):
 		return url2
 
 def create_print1(name):
-	time.sleep(2)
+	time.sleep(4)
 	ls = []
 	ls.append(name)
 	ls.append(do_search(name, "facebook"))
-	time.sleep(2)
+	time.sleep(4)
 	ls.append(do_search(name, "twitter"))
-	time.sleep(2)
+	time.sleep(4)
 	ls.append(do_search(name, "youtube"))
-	time.sleep(2)
+	time.sleep(4)
 	ls.append(do_search(name, "linkedin"))
-	time.sleep(2)
+	time.sleep(4)
 	try:
-		curr = Scan(do_search1(name + " news"), "rss")
+		curr = Scan(do_search1(name + " news rss"), "rss")
 	except urllib.error.URLError:
 		curr = None
-	time.sleep(2)
+	time.sleep(4)
 	if not curr:
 		curr = FeedCreator.create_feed(name)
 	ls.append(curr)
