@@ -12,7 +12,7 @@ def Scan(url, network):
 		if y:
 			return y[0]['href']
 	else:
-		y = soup.find_all('a', type=re.compile("rss|xml|feed|atom"))
+		y = soup.find_all('a', type=re.compile("rss|xml|feed|atom", re.IGNORECASE))
 		for k in y:
 			z = k['href']
 			if not "http://www." in z:
