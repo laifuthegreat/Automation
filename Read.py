@@ -7,13 +7,13 @@ from Search import do_search1
 import time
 
 def Automate(input_file, official_file):
-	inst_dict = Read_Official(official_file)
-	myfile = open('new_file.csv', 'w', newline='')
+	inst_dict = Read_Official('io/input/'+official_file, 'r')
+	myfile = open('io/output/o_file.csv', 'w', newline='')
 	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-	f = open(input_file, 'r')
+	f = open('io/input/'+input_file, 'r')
 	for s in f:
 		ls = s.split(',')
-		name = fix_name(ls[1])
+		name = fix_name(ls[0])
 		print(name)
 		try:
 			print_list = create_print(name, inst_dict[name])
@@ -102,7 +102,7 @@ def create_print(name, site_url):
 		ls.append(curr)
 	else:
 		try:
-			curr = Scan(do_search1(name+" news rss"), "rss")
+			curr = Scan(do_search1(name+" news"), "rss")
 		except (urllib.error.URLError, AttributeError):
 			curr = None
 		if not curr:
@@ -131,7 +131,7 @@ def create_print1(name):
 	ls.append(do_search(name, "linkedin"))
 	time.sleep(4)
 	try:
-		curr = Scan(do_search1(name + " news rss"), "rss")
+		curr = Scan(do_search1(name + " news"), "rss")
 	except urllib.error.URLError:
 		curr = None
 	time.sleep(4)

@@ -61,7 +61,7 @@ def fix_term(search_term):
 	search_term = ls[0]
 	i = 1
 	while i < len(ls):
-		search_term += "%26"
+		search_term += "and"
 		search_term += ls[i]
 		i += 1
 	return search_term
