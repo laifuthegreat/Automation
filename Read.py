@@ -1,41 +1,31 @@
 import csv
 import FeedCreator
-from Search import do_search
+from Search import *
 from Scan import Scan
 import urllib
-from Search import do_search1
+import urllib.request
 import time
+from URLtools import *
 
 def Automate(input_file, official_file):
-	inst_dict = Read_Official('io/input/'+official_file, 'r')
+	inst_dict = Read_Official('io/input/'+official_file)
 	myfile = open('io/output/o_file.csv', 'w', newline='')
 	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 	f = open('io/input/'+input_file, 'r')
-	for s in f:
-		ls = s.split(',')
-		name = fix_name(ls[0])
-		print(name)
+	m_reader = csv.reader(f, skipinitialspace = True)
+	for ls in m_reader:
+		name = fix_name(ls[1])
+		print("_________________________________")
+		print(name + ":")
 		try:
 			print_list = create_print(name, inst_dict[name])
 		except KeyError:
-			x = do_search1(name)
+			x = search(name)
 			if not x:
-				create_print1(name)
+				print_list = create_print1(name)
 			else:
 				print_list = create_print(name, x)
 		wr.writerow(print_list)
-
-def are_same(url1, url2):
-	return strip_prefix(url1).lower() == strip_prefix(url2).lower()
-
-def strip_prefix(url):
-	if url[:7]=="http://":
-		url = url[7:]
-	elif url[:8]=="https://":
-		url = url[8:]
-	if url[:4]=="www.":
-		url = url[4:]
-	return url
 
 def fix_name(input_string):
 	if "Univ" in input_string:
@@ -57,84 +47,70 @@ def fix_name(input_string):
 def Read_Official(input_file):
 	inst_dict = {}
 	f = open(input_file, 'r')
-	for s in f:
-		ls = s.split(',')
+	r = csv.reader(f, skipinitialspace = True)
+	for ls in r:
 		if ls[1] != "":
-			if ls[1][:7] != "http://":
-				x = "http://"+ls[1]
+			url = ls[1].lower()
+			if not is_valid(url):
+				x = garnish_url(url)
 			else:
-				x = ls[1]
+				x = url
 			inst_dict[ls[0]] = x
 		else:
 			continue
 	return inst_dict
 
+def find_link(name, site_url, html, network, out_ls):
+	if html:
+		curr = Scan(site_url, html, network)
+		if curr:
+			out_ls.append(curr)
+			return
+	out_ls.append(search_network(name, network))
+
+
 def create_print(name, site_url):
-	time.sleep(2)
 	ls = []
 	ls.append(name)
-	curr = Scan(site_url, "facebook")
-	if curr:
-		ls.append(curr)
-	else:
-		time.sleep(2)
-		ls.append(do_search(name, "facebook"))
-	curr = Scan(site_url, "twitter")
-	if curr:
-		ls.append(curr)
-	else:
-		time.sleep(2)
-		ls.append(do_search(name, "twitter"))
-	curr = Scan(site_url, "youtube")
-	if curr:
-		ls.append(curr)
-	else:
-		time.sleep(2)
-		ls.append(do_search(name, "youtube"))
-	curr = Scan(site_url, "linkedin")
-	if curr:
-		ls.append(curr)
-	else:
-		time.sleep(2)
-		ls.append(do_search(name, "linkedin"))
-	curr = Scan(site_url, "rss")
-	if curr:
-		ls.append(curr)
-	else:
+	try:
+		html = urllib.request.urlopen(site_url).read()
+	except (AttributeError, ConnectionResetError, ValueError):
+		html = False
+	find_link(name, site_url, html, "facebook", ls)
+	find_link(name, site_url, html, "twitter", ls)
+	find_link(name, site_url, html, "youtube", ls)
+	find_link(name, site_url, html, "linkedin", ls)
+	if html:
+		curr = Scan(site_url, html, "rss")
+		if curr:
+			ls.append(curr)
+			return ls
+	rsslink = search(name + " news")
+	if rsslink:
 		try:
-			curr = Scan(do_search1(name+" news"), "rss")
-		except (urllib.error.URLError, AttributeError):
+			curr = Scan(rsslink, urllib.request.urlopen(rsslink), "rss")
+		except (AttributeError, ConnectionResetError, ValueError):
 			curr = None
-		if not curr:
-			curr = FeedCreator.create_feed(name)
-		ls.append(curr)
+	if not curr:
+		curr = FeedCreator.create_feed(name)
+	ls.append(curr)
 	return ls
 
-def pick(url1, url2):
-	print("CONFLICT! Would you like to use (1): {u1} or (2): {u2}".format(u1=url1,u2=url2))
-	x = input()
-	if x == "1":
-		return url1
-	else:
-		return url2
-
 def create_print1(name):
-	time.sleep(4)
 	ls = []
 	ls.append(name)
-	ls.append(do_search(name, "facebook"))
-	time.sleep(4)
-	ls.append(do_search(name, "twitter"))
-	time.sleep(4)
-	ls.append(do_search(name, "youtube"))
-	time.sleep(4)
-	ls.append(do_search(name, "linkedin"))
-	time.sleep(4)
-	try:
-		curr = Scan(do_search1(name + " news"), "rss")
-	except urllib.error.URLError:
+	ls.append(search_network(name, "facebook"))
+	ls.append(search_network(name, "twitter"))
+	ls.append(search_network(name, "youtube"))
+	ls.append(search_network(name, "linkedin"))
+	rsslink = search(name + " news")
+	if rsslink:
+		try:
+			curr = Scan(rsslink, urllib.request.urlopen(rsslink), "rss")
+		except (AttributeError, ConnectionResetError, ValueError):
+			curr = None
+	else:
 		curr = None
-	time.sleep(4)
 	if not curr:
 		curr = FeedCreator.create_feed(name)
 	ls.append(curr)
