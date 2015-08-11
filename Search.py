@@ -12,7 +12,7 @@ def search_network(term, network):
     url_ls = []
     for result in result_list:
         url_ls.append(Pair(result.title, result.url))
-    return put_in_bing(url_ls)
+    return put_in_pair(url_ls)
 
 def get_site_search(network):
     if network == "youtube":
