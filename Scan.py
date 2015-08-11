@@ -23,12 +23,14 @@ def Scan(url, html, network):
 		y = soup.find_all('a', href=re.compile(x))
 		return put_in(build_url_list(y))
 	else:
-		y = soup.find_all('a', type=re.compile(".rss|.xml|feed|atom", re.IGNORECASE))
+		y = soup.find_all('a', type=re.compile(".rss|.xml|feed|atom|subscribe", re.IGNORECASE))
 		if y:
 			return put_in(build_url_list(y))
 		else:
-			y = soup.find_all('a', href=re.compile("rss|xml|feed|atom", re.IGNORECASE))
-			return put_in(build_url_list(y))
+			y = soup.find_all('a', href=re.compile("rss|xml|feed|atom|subscribe", re.IGNORECASE))
+			url_list = build_url_list(y)
+			url_list.append(url)
+			return put_in(url_list)
 
 def find_network(network):
 	x = network

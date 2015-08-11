@@ -7,8 +7,9 @@ def base_url(url):
 	return "{0.scheme}://{0.netloc}/".format(urlsplit(url))
 
 def strip_url(url):
-	while url[-1] == "/":
-		url = url[:-1]
+	if url != "":
+		while url[-1] == "/":
+			url = url[:-1]
 	if url[:7] == "http://":
 		url = url[7:]
 	elif url[:8] == "https://":
@@ -19,7 +20,7 @@ def strip_url(url):
 
 def garnish_url(url):
 	url = strip_url(url)
-	url = "http://www." + url + "/"
+	url = "http://" + url
 	return url
 
 def is_local(url):
