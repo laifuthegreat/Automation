@@ -9,8 +9,7 @@ from URLtools import *
 import urllib.parse
 import socket
 
-def Automate(input_file, official_file):
-	inst_dict = Read_Official('io/input/'+official_file)
+def Automate(input_file):
 	myfile = open('io/output/o_file.csv', 'w', newline='')
 	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 	f = open('io/input/'+input_file, 'r')
@@ -19,17 +18,17 @@ def Automate(input_file, official_file):
 		name = fix_name(ls[1])
 		print("_________________________________")
 		print("{n1} ({l1}, {l2}):".format(n1=name, l1=ls[2], l2=ls[3]))
-		try:
-			print_list = create_print(name, inst_dict[name])
-		except KeyError:
-			try:
-				x = "http://{url}".format(url=ls[4].split('@')[1])
-			except IndexError:
-				x = search(name)
-			if not x:
-				print_list = create_print1(name)
+		if ls[4] != "":
+			webmail = ['yahoo.com', 'gmail.com', 'outlook.com', 'live.come', 'hotmail.com', 'aol.com', 'icloud.com']
+			x = ls[4]
+			if not x in webmail:
+				x = "http://{url}".format(url=x)
 			else:
-				print_list = create_print(name, x)
+				x = None
+		if not x:
+			print_list = create_print1(name)
+		else:
+			print_list = create_print(name, x)
 		wr.writerow(print_list)
 
 def fix_name(input_string):
@@ -48,22 +47,6 @@ def fix_name(input_string):
 	else:
 		rS = input_string
 	return rS
-
-def Read_Official(input_file):
-	inst_dict = {}
-	f = open(input_file, 'r')
-	r = csv.reader(f, skipinitialspace = True)
-	for ls in r:
-		if ls[1] != "":
-			url = ls[1].lower()
-			if not is_valid(url):
-				x = garnish_url(url)
-			else:
-				x = url
-			inst_dict[ls[0]] = x
-		else:
-			continue
-	return inst_dict
 
 def find_link(name, site_url, html, network, out_ls):
 	if html:
