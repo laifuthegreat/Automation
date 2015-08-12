@@ -1,7 +1,7 @@
-from py_bing_search import PyBingSearch
+from BingSearch import PyBingSearch
 import time
 from Input import put_in_pair
-from Custom_Classes import Pair
+from CustomClasses import Pair
 
 def search_network(term, network):
     print("Searching the web for {n1} {k} links".format(n1 = term, k = network))
