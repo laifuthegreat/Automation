@@ -9,5 +9,6 @@ def search_twitter(query):
 	results = api.search_users(query)
 	return_list = []
 	for i in range(0, 7):
-		return_list.append(Pair(results[i].description, "https://twitter.com/{sn}".format(sn=results[i].screen_name)))
+		if i < len(results):
+			return_list.append(Pair(results[i].description, "https://twitter.com/{sn}".format(sn=results[i].screen_name)))
 	return put_in_pair(return_list)

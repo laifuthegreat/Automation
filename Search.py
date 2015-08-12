@@ -3,14 +3,14 @@ import time
 from Input import put_in_pair
 from CustomClasses import Pair
 import YouTubeSearch
-import TwitterSearch
+import SearchTwitter
 
 def search_network(term, network):
     print("Searching the web for {n1} {k} links".format(n1 = term, k = network))
     if network == "youtube":
         fn = YouTubeSearch.do_search
     elif network == "twitter":
-        fn = TwitterSearch.search_twitter
+        fn = SearchTwitter.search_twitter
     else:
         bing = PyBingSearch('xj/imNsLFqGQ2RTMdiyduENDdqYy2PMLNCjztSlG3hs')
         sitesearch = get_site_search(network)

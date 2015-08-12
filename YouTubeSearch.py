@@ -39,7 +39,7 @@ def do_search(query):
     result_list.append(
       Pair(
         search_result["snippet"]["title"],
-        search_result["snippet"]["thumbnails"]['default']['url']
+        "https://www.youtube.com/channel/{id}".format(id=search_result["id"]["channelId"])
       )
     )
   return put_in_pair(result_list)

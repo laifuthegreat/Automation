@@ -19,7 +19,7 @@ def put_in(results):
 	else:
 		return results[int(response)-1]
 
-def put_in_bing(results):
+def put_in_pair(results):
 	i = 1
 	for result in results:
 		print(str(i)+" "+str(result))
