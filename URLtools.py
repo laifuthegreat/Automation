@@ -1,4 +1,6 @@
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlparse
+
+import re
 
 def are_same(url1, url2):
 	return strip_url(url1)==strip_url(url2)
@@ -24,7 +26,7 @@ def garnish_url(url):
 	return url
 
 def is_local(url):
-	return url[0] == "/" or url[0] == "\\"
-
+	return urlparse(url).scheme == '' and url[:2] != '//'
+	
 def is_valid(url):
-	return url[:7] == "http://" or url[:8] == "https://"
+	return urlparse(url).scheme == ('http' or 'https') or url[:2] == '//'

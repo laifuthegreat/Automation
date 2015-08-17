@@ -4,6 +4,7 @@ from Search import *
 from Scan import Scan
 import urllib
 import urllib.request
+import http
 import time
 from URLtools import *
 import urllib.parse
@@ -62,7 +63,7 @@ def create_print(name, site_url):
 	ls.append(name)
 	try:
 		html = get_html(site_url)
-	except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError):
+	except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 		html = False
 	find_link(name, site_url, html, "facebook", ls)
 	find_link(name, site_url, html, "twitter", ls)
@@ -92,35 +93,35 @@ def find_rss(name):
 	if rsslink:
 		try:
 			curr = Scan(rsslink, get_html(rsslink), "rss")
-		except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError):
+		except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 			curr = None
 	if not curr:
 		rsslink = search(name + " rss feeds")
 		if rsslink:
 			try:
 				curr = Scan(rsslink, get_html(rsslink), "rss")
-			except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError):
+			except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 				curr = None
 		if not curr:
 			rsslink = search(name + " blog")
 			if rsslink:
 				try:
 					curr = Scan(rsslink, get_html(rsslink), "rss")
-				except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError):
+				except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 					curr = None
 			if not curr:
 				rsslink = search(name + " calendar")
 				if rsslink:
 					try:
 						curr = Scan(rsslink, get_html(rsslink), "rss")
-					except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError):
+					except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 						curr = None
 				if not curr:
 					rsslink = search(name + " topix")
 					if rsslink:
 						try:
 							curr = Scan(rsslink, get_html(rsslink), "rss")
-						except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError):
+						except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 							curr = None
 	if not curr:
 		curr = FeedCreator.create_feed(name)

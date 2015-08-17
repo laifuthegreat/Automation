@@ -13,7 +13,12 @@ def Scan(url, html, network):
 				curr_url = base_url(url)+result['href'][1:]
 			else:
 				curr_url = result['href']
-			ls.append(curr_url)
+			curr_feed = feedparser.parse(curr_url)
+			if curr_feed['items']:
+				ls.append(curr_url)
+		curr_page_feed = feedparser.parse(url)
+		if curr_page_feed['items']:
+			ls.append(url)
 		return ls
 
 	print("Scanning {u} for {k} links".format(u = url, k = network))
@@ -23,14 +28,10 @@ def Scan(url, html, network):
 		y = soup.find_all('a', href=re.compile(x))
 		return put_in(build_url_list(y))
 	else:
-		y = soup.find_all('a', type=re.compile(".rss|.xml|feed|atom|subscribe", re.IGNORECASE))
-		if y:
-			return put_in(build_url_list(y))
-		else:
-			y = soup.find_all('a', href=re.compile("rss|xml|feed|atom|subscribe", re.IGNORECASE))
-			url_list = build_url_list(y)
-			url_list.append(url)
-			return put_in(url_list)
+		y = soup.find_all('a', type=re.compile("rss+xml|atom", re.IGNORECASE))
+		if not y:
+			y = soup.find_all('a', href=re.compile("rss|\.xml$|(?!feedback|mailto:)feed|atom|subscribe", re.IGNORECASE))
+		return put_in(build_url_list(y))
 
 def find_network(network):
 	x = network
