@@ -27,10 +27,9 @@ def Automate(input_file):
 			else:
 				x = None
 		if not x:
-			print_list = create_print1(name)
+			create_print1(name, wr, ls[0])
 		else:
-			print_list = create_print(name, x)
-		wr.writerow(print_list)
+			create_print(name, x, wr, ls[0])
 
 def fix_name(input_string):
 	if "Univ" in input_string:
@@ -49,33 +48,29 @@ def fix_name(input_string):
 		rS = input_string
 	return rS
 
-def find_link(name, site_url, html, network, out_ls):
+def find_link(name, site_url, html, network):
 	if html:
 		curr = Scan(site_url, html, network)
 		if curr:
-			out_ls.append(curr)
-			return
-	out_ls.append(search_network(name, network))
+			return curr
+	return search_network(name, network)
 
 
-def create_print(name, site_url):
-	ls = []
-	ls.append(name)
+def create_print(name, site_url, writer, m_number):
 	try:
 		html = get_html(site_url)
 	except (AttributeError, ConnectionResetError, ValueError, socket.timeout, urllib.error.HTTPError, urllib.error.URLError, http.client.BadStatusLine):
 		html = False
-	find_link(name, site_url, html, "facebook", ls)
-	find_link(name, site_url, html, "twitter", ls)
-	find_link(name, site_url, html, "youtube", ls)
-	find_link(name, site_url, html, "linkedin", ls)
+	writer.writerow([m_number, name, 'Facebook', find_link(name, site_url, html, "facebook")])
+	writer.writerow([m_number, name, 'Twitter', find_link(name, site_url, html, "twitter")])
+	writer.writerow([m_number, name, 'YouTube', find_link(name, site_url, html, "youtube")])
+	writer.writerow([m_number, name, 'LinkedIn', find_link(name, site_url, html, "linkedin")])
 	curr = None
 	if html:
 		curr = Scan(site_url, html, "rss")
 	if not curr:
 		curr = find_rss(name)
-	ls.append(curr)
-	return ls
+	writer.writerow([m_number, name, 'RSS', curr])
 
 def get_html(url):
 	req = urllib.request.Request(url,
@@ -127,13 +122,9 @@ def find_rss(name):
 		curr = FeedCreator.create_feed(name)
 	return curr
 
-def create_print1(name):
-	ls = []
-	ls.append(name)
-	ls.append(search_network(name, "facebook"))
-	ls.append(search_network(name, "twitter"))
-	ls.append(search_network(name, "youtube"))
-	ls.append(search_network(name, "linkedin"))
-	curr = find_rss(name)
-	ls.append(curr)
-	return ls
+def create_print1(name, writer, m_number):
+	writer.writerow([m_number, name, 'Facebook', search_network(name, "facebook")])
+	writer.writerow([m_number, name, 'Twitter', search_network(name, "twitter")])
+	writer.writerow([m_number, name, 'YouTube', search_network(name, "youtube")])
+	writer.writerow([m_number, name, 'LinkedIn', search_network(name, "linkedin")])
+	writer.writerow([m_number, name, 'RSS', find_rss(name)])
